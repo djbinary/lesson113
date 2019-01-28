@@ -1,0 +1,14 @@
+0000000000000000000000000000000000000000 5053cf390c65e36f12ad12c41ceb4b91ba42ba81 Sam <sameverything@gmail.com> 1546595982 +0000	commit (initial): innitial commit
+5053cf390c65e36f12ad12c41ceb4b91ba42ba81 aa24f50830be1b24962967fbf8ae557e41ea1987 Sam <sameverything@gmail.com> 1546597625 +0000	commit: changed greeting to yo G
+aa24f50830be1b24962967fbf8ae557e41ea1987 dc05de547c7b97998fb27da1caf795cc64f34729 Sam <sameverything@gmail.com> 1546945090 +0000	commit: Mongo Error
+dc05de547c7b97998fb27da1caf795cc64f34729 8be3bbd76209b95b3334d91a11caea4911a4874b Sam <sameverything@gmail.com> 1547290811 +0000	commit: Finishe oAuth Flow
+8be3bbd76209b95b3334d91a11caea4911a4874b 3767634ff8a9adc5aa1856a4214539530e4c56fe Sam <sameverything@gmail.com> 1547291590 +0000	commit: added proxy true
+3767634ff8a9adc5aa1856a4214539530e4c56fe 7e4dc89ecd1de629d7b6774761f6d7873e9f63e2 Sam <sameverything@gmail.com> 1547292303 +0000	commit: white space
+7e4dc89ecd1de629d7b6774761f6d7873e9f63e2 22affee10b7603056de425a9a28f7f6d69ed189d Sam <sameverything@gmail.com> 1548181076 +0000	commit: Change before TIm
+22affee10b7603056de425a9a28f7f6d69ed189d 59b1c76b2a6dbc7c35c27c6c15dff613f0923fcb Sam <sameverything@gmail.com> 1548181491 +0000	commit: tim stuff
+59b1c76b2a6dbc7c35c27c6c15dff613f0923fcb 0999d5c414f960978aced834d42723f406d610f1 Sam <sameverything@gmail.com> 1548181538 +0000	commit: tim
+0999d5c414f960978aced834d42723f406d610f1 282bf4f468ae3bbbf749021d144be8e5aceafc6d Sam <sameverything@gmail.com> 1548181555 +0000	pull origin master --rebase: checkout 282bf4f468ae3bbbf749021d144be8e5aceafc6d
+282bf4f468ae3bbbf749021d144be8e5aceafc6d 0999d5c414f960978aced834d42723f406d610f1 Sam <sameverything@gmail.com> 1548182090 +0000	reset: moving to HEAD@{1}
+0999d5c414f960978aced834d42723f406d610f1 5f40263e6adbb13243c42f5c000e79f66a139ae1 Sam <sameverything@gmail.com> 1548699630 +0000	commit: added billing and client
+5f40263e6adbb13243c42f5c000e79f66a139ae1 655b6b2d72e0f2e2dcd5b0ba9be6a339af7fb35c Sam <sameverything@gmail.com> 1548701064 +0000	commit: added billing and client 22
+655b6b2d72e0f2e2dcd5b0ba9be6a339af7fb35c ba5c367a85a8f75e0724413a439c3c7493cd93f2 Sam <sameverything@gmail.com> 1548701459 +0000	commit: after get/ error

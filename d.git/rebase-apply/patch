@@ -1,0 +1,13 @@
+diff --git a/index.js b/index.js
+index c16c41c3994397c208f2d2fbf9132aef98ba4c79..a388379a87b9baa9f5ed0bebcfb08e869f3c7256 100644
+--- a/index.js
++++ b/index.js
+@@ -1,7 +1,7 @@
+ const express = require("express");
+ const app = express();
+ app.get("/", (req, res) => {
+-  res.send({ hi: "there" });
++  res.send({ hi: "What's up G" });
+ });
+ const PORT = process.env.PORT || 5000;
+ app.listen(PORT);

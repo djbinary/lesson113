@@ -1,0 +1,23 @@
+From 7e4dc89ecd1de629d7b6774761f6d7873e9f63e2 Mon Sep 17 00:00:00 2001
+From: Sam <sameverything@gmail.com>
+Date: Sat, 12 Jan 2019 11:25:03 +0000
+Subject: white space
+
+---
+ config/prod.js | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/config/prod.js b/config/prod.js
+index 62913515898f35d8fae9e027a6bc365c645cceb8..abf8207de206e130e6ca7294a3f4880fd751df4a 100644
+--- a/config/prod.js
++++ b/config/prod.js
+@@ -8,4 +8,3 @@ module.exports = {
+     mongoURI: process.env.MONGO_URI,
+     cookieKey: process.env.COOKIE_KEY 
+   };
+-  
+\ No newline at end of file
+-- 
+2.20.1.windows.1
+
+

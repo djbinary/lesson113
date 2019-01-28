@@ -1,0 +1,72 @@
+From 22affee10b7603056de425a9a28f7f6d69ed189d Mon Sep 17 00:00:00 2001
+From: Sam <sameverything@gmail.com>
+Date: Tue, 22 Jan 2019 18:17:56 +0000
+Subject: Change before TIm
+
+---
+ client/src/components/Header.js | 51 +++++++++++++++++++++++++++++++++
+ 1 file changed, 51 insertions(+)
+ create mode 100644 client/src/components/Header.js
+
+diff --git a/client/src/components/Header.js b/client/src/components/Header.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..706982cb4e40847d675042b6ec2488f584e6cd6f
+--- /dev/null
++++ b/client/src/components/Header.js
+@@ -0,0 +1,51 @@
++import React, { Component } from 'react';
++import { connect } from 'react-redux';
++import { Link } from 'react-router-dom';
++
++class Header extends Component {
++    renderContent() {
++        switch (this.props.auth) {
++            case null:
++            return;
++
++            case false:
++            return ( 
++                <li><a href = "/auth/google">Login with Google</a></li>
++            );
++            default:
++            return (
++                <li><a href = "/api/logout">Log Out</a></li>
++            );
++        }
++    }
++    render(){
++        
++        return(
++            <nav>
++                <div className = "nav-wrapper">
++                <Link  
++                to={this.props.auth ? '/surveys' : '/'} 
++                className = "left brand-logo"
++                >
++                Emaily
++                </Link>
++                <ul className = "right">
++                    { this.renderContent() }
++                </ul>
++                </div>
++            </nav>
++        );
++    }
++}
++
++function mapStateToProps({ auth }) {
++    return { auth };
++}
++export default connect(mapStateToProps) (Header);
++
++/* BEFORE REFactor
++ function mapStateToProps(state) {
++    return { auth: state.auth };
++}
++export default connect() (Header);
++*/
+\ No newline at end of file
+-- 
+2.20.1.windows.1
+
+

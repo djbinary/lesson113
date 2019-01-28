@@ -1,0 +1,308 @@
+From 8be3bbd76209b95b3334d91a11caea4911a4874b Mon Sep 17 00:00:00 2001
+From: Sam <sameverything@gmail.com>
+Date: Sat, 12 Jan 2019 11:00:11 +0000
+Subject: Finishe oAuth Flow
+
+---
+ .gitignore           |  2 +-
+ config/keys.js       |  8 ++++++
+ config/prod.js       | 11 ++++++++
+ index.js             | 18 ++++++++++++
+ models/User.js       | 13 +++++++++
+ package-lock.json    | 45 ++++++++++++++++++++++++++++++
+ package.json         |  1 +
+ routes/authRoutes.js |  7 +++++
+ services/passport.js | 65 +++++++++++++++++++++++++++++++++++++++++---
+ 9 files changed, 165 insertions(+), 5 deletions(-)
+ create mode 100644 config/keys.js
+ create mode 100644 config/prod.js
+ create mode 100644 models/User.js
+
+diff --git a/.gitignore b/.gitignore
+index 55e810bc29e2388263ddd642cfc6e9b22827a207..3c4c7eba8ca4267f5e8931e7236904ff50978c0f 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,2 +1,2 @@
+ node_modules
+-keys.js
++dev.js
+diff --git a/config/keys.js b/config/keys.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..6cf87b1dd2a94fd6ac8664d7b1a7eeb3cac76175
+--- /dev/null
++++ b/config/keys.js
+@@ -0,0 +1,8 @@
++// Keys.JS -> Return Dev or Production keys
++
++if (process.env.NODE_ENV === 'production'){
++  module.exports = require('./prod');
++
++} else {
++  module.exports = require('./dev');
++}
+\ No newline at end of file
+diff --git a/config/prod.js b/config/prod.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..62913515898f35d8fae9e027a6bc365c645cceb8
+--- /dev/null
++++ b/config/prod.js
+@@ -0,0 +1,11 @@
++// Production keys here
++// Set variables in Heruku first
++
++// DEV.JS Do NOT Commit this
++module.exports = {
++    googleClientID: process.env.GOOGLE_CLIENT_ID,
++    googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
++    mongoURI: process.env.MONGO_URI,
++    cookieKey: process.env.COOKIE_KEY 
++  };
++  
+\ No newline at end of file
+diff --git a/index.js b/index.js
+index 58cb8cf0b3779217c886501e0d4c0be2fced289c..6fa52091c9f866c7126c87ce818c697daa54c810 100644
+--- a/index.js
++++ b/index.js
+@@ -1,11 +1,29 @@
+ const express = require('express');
+ const mongoose = require('mongoose');
++const cookieSession = require('cookie-session');
++const passport = require('passport');
+ const keys = require('./config/keys');
++
++// require('./services/passport'); IF yo load this file first, it will try to
++// run const User = mongoose.model('users'); BEFORE the schema is deinfe
++//in models/users --> const userSchema = new Schema ({ ...
++// So we need to MAKE SURE we run the model/Users BEFORE passport
++require('./models/User');
+ require('./services/passport');
+ 
++
+ mongoose.connect(keys.mongoURI);
+ const app = express();
+ 
++app.use(
++    cookieSession({
++        maxAge: 30 * 24 * 60 * 60 * 1000,
++        keys: [keys.cookieKey]
++    })
++
++);
++app.use(passport.initialize());
++app.use(passport.session());
+ 
+ require('./routes/authRoutes')(app);
+ 
+diff --git a/models/User.js b/models/User.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..9cf4c498e01abd70af16245467039c15ef7f022a
+--- /dev/null
++++ b/models/User.js
+@@ -0,0 +1,13 @@
++const mongoose = require('mongoose');
++const {Schema} = mongoose;
++//This is the same as const Schema = mongoose.userSchema;
++
++// mongoose requires setting the parameters for the collection. So we define them here
++const userSchema = new Schema ({
++  googleId: String,
++  userEmail: String,
++  userName: String
++});
++
++//saving the schema into mongoDB in users collection - Creating a model Class:
++mongoose.model('users', userSchema);
+diff --git a/package-lock.json b/package-lock.json
+index 0b7dfcec09b635c54a531b3d7aa73eaa153fbebd..a386e78eba59331893b947087fa3e13a881330c9 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -385,11 +385,46 @@
+       "resolved": "https://registry.npmjs.org/cookie/-/cookie-0.3.1.tgz",
+       "integrity": "sha1-5+Ch+e9DtMi6klxcWpboBtFoc7s="
+     },
++    "cookie-session": {
++      "version": "2.0.0-beta.3",
++      "resolved": "https://registry.npmjs.org/cookie-session/-/cookie-session-2.0.0-beta.3.tgz",
++      "integrity": "sha512-zyqm5tA0z9yMEB/xyP7lnRnqp8eLR2e0dap+9+rBwVigla9yPKn8XTL1jJymog8xjfrowqW2o5LUjixQChkqrw==",
++      "requires": {
++        "cookies": "0.7.1",
++        "debug": "3.1.0",
++        "on-headers": "~1.0.1",
++        "safe-buffer": "5.1.1"
++      },
++      "dependencies": {
++        "debug": {
++          "version": "3.1.0",
++          "resolved": "https://registry.npmjs.org/debug/-/debug-3.1.0.tgz",
++          "integrity": "sha512-OX8XqP7/1a9cqkxYw2yXss15f26NKWBpDXQd0/uK/KPqdQhxbPa994hnzjcE2VqQpDslf55723cKPUOGSmMY3g==",
++          "requires": {
++            "ms": "2.0.0"
++          }
++        },
++        "safe-buffer": {
++          "version": "5.1.1",
++          "resolved": "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.1.1.tgz",
++          "integrity": "sha512-kKvNJn6Mm93gAczWVJg7wH+wGYWNrDHdWvpUmHyEsgCtIwwo3bqPtV4tR5tuPaUhTOo/kvhVwd8XwwOllGYkbg=="
++        }
++      }
++    },
+     "cookie-signature": {
+       "version": "1.0.6",
+       "resolved": "https://registry.npmjs.org/cookie-signature/-/cookie-signature-1.0.6.tgz",
+       "integrity": "sha1-4wOogrNCzD7oylE6eZmXNNqzriw="
+     },
++    "cookies": {
++      "version": "0.7.1",
++      "resolved": "https://registry.npmjs.org/cookies/-/cookies-0.7.1.tgz",
++      "integrity": "sha1-fIphX1SBxhq58WyDNzG8uPZjuZs=",
++      "requires": {
++        "depd": "~1.1.1",
++        "keygrip": "~1.0.2"
++      }
++    },
+     "copy-descriptor": {
+       "version": "0.1.1",
+       "resolved": "https://registry.npmjs.org/copy-descriptor/-/copy-descriptor-0.1.1.tgz",
+@@ -1540,6 +1575,11 @@
+       "resolved": "https://registry.npmjs.org/kareem/-/kareem-2.3.0.tgz",
+       "integrity": "sha512-6hHxsp9e6zQU8nXsP+02HGWXwTkOEw6IROhF2ZA28cYbUk4eJ6QbtZvdqZOdD9YPKghG3apk5eOCvs+tLl3lRg=="
+     },
++    "keygrip": {
++      "version": "1.0.3",
++      "resolved": "https://registry.npmjs.org/keygrip/-/keygrip-1.0.3.tgz",
++      "integrity": "sha512-/PpesirAIfaklxUzp4Yb7xBper9MwP6hNRA6BGGUFCgbJ+BM5CKBtsoxinNXkLHAr+GXS1/lSlF2rP7cv5Fl+g=="
++    },
+     "kind-of": {
+       "version": "6.0.2",
+       "resolved": "https://registry.npmjs.org/kind-of/-/kind-of-6.0.2.tgz",
+@@ -1907,6 +1947,11 @@
+         "ee-first": "1.1.1"
+       }
+     },
++    "on-headers": {
++      "version": "1.0.1",
++      "resolved": "https://registry.npmjs.org/on-headers/-/on-headers-1.0.1.tgz",
++      "integrity": "sha1-ko9dD0cNSTQmUepnlLCFfBAGk/c="
++    },
+     "p-finally": {
+       "version": "1.0.0",
+       "resolved": "https://registry.npmjs.org/p-finally/-/p-finally-1.0.0.tgz",
+diff --git a/package.json b/package.json
+index 89d83351e543101e6ca77c8f9cf3f75485a4412a..5a247e5e8b1353236ac1386563a6334d76bb19c8 100644
+--- a/package.json
++++ b/package.json
+@@ -14,6 +14,7 @@
+   "author": "",
+   "license": "ISC",
+   "dependencies": {
++    "cookie-session": "^2.0.0-beta.3",
+     "express": "^4.16.4",
+     "mongoose": "^5.4.2",
+     "nodemon": "^1.18.9",
+diff --git a/routes/authRoutes.js b/routes/authRoutes.js
+index de08509e7ac592430cc628b454aa6e6bed5cfc5c..86c8415a1eedc330976d276c89b2d67fe5798072 100644
+--- a/routes/authRoutes.js
++++ b/routes/authRoutes.js
+@@ -8,4 +8,11 @@ module.exports = app => {
+   );
+   // Register user
+   app.get('/auth/google/callback', passport.authenticate('google'))
++  app.get('/api/logout', (req, res) =>{
++    req.logout();
++    res.send(req.user);
++  });
++  app.get('/api/current_user',(req, res) => {
++res.send(req.user);
++  });
+ };
+diff --git a/services/passport.js b/services/passport.js
+index def8831f82d9bbcc99a48c5c46cf8fc6bf152656..f1c8140789fbe60d2639c526533a6a59aff5a9bc 100644
+--- a/services/passport.js
++++ b/services/passport.js
+@@ -1,20 +1,77 @@
+ const passport = require('passport');
+ const GoogleStrategy = require('passport-google-oauth20').Strategy;
++const mongoose = require('mongoose');
+ const keys = require('../config/keys');
+ 
++// Instead of using Reguire User.js, we use the following,
++// beceause users was already loaded on mongoose.model in the User.js
++//Loading mongoose.model('users', userSchema);
+ 
++const User = mongoose.model('users');
++
++passport.serializeUser((user, done) => {
++  done(null, user.id);
++});
++
++passport.deserializeUser((id, done ) => {
++ User.findById(id).then(user => {
++   done(null, user);
++ });
++});
+ passport.use(
+   new GoogleStrategy(
+     {
+       clientID: keys.googleClientID,
+       clientSecret: keys.googleClientSecret,
+       callbackURL: '/auth/google/callback'
++
+     },
++   
+     (accessToken, refreshToken, profile, done) => {
+-      console.log('access token', accessToken);
+-      console.log('refresh token', refreshToken);
+-      console.log('profile', profile);
++      
++      User.findOne({googleId: profile.id}).then(existingUser => {
++            if (existingUser){
++              done(null, existingUser);
++              console.log('user exists');
++            } else {
++              new User({googleId: profile.id}) 
++              .save() 
++              
++              .then(user => done(null, user)); 
++              
++          }
++        });
++      }
++ )
++);
++
++
++
++   
++   /* (accessToken, refreshToken, profile, done) => {
++      //the 'done' argument tell Passport that we are DONE with the authentication flow, 
++ 
++      User.findOne({googleId: profile.id})
++      //Check logic, if found ONE that match criterial (TREU) execute .then promise
++              .then((existingUser) => {
++            if (existingUser){
++                   // Use the Done function, first argument gives any Error messages,
++                   // second argument returns the user
+ 
+-    }
++              done(null, existingUser);
++              console.log('user exists');
++            } else {
++              new User({googleId: profile.id}) //create new mongoose model instance. Single record inside our collection
++              .save() //save model instance
++              // Add argument to the function then, user (which just created)
++              //User as an argument to the function we passed to .then And then as a second argument we will pass and the user who has just saved.
++              // HOW did user get assigned a value?!!
++              .then(user => done(null, user)); // but by convention we always make use of the one that's provided to us inside of the promised callback
++              //because this one might have some additional changes to that was made to it... 'user' is from promise call back?.
++              console.log('value of user is', user);
++          }
++        });
++      }
+  )
+ );
++*/
+\ No newline at end of file
+-- 
+2.20.1.windows.1
+
+

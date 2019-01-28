@@ -1,0 +1,27 @@
+From 3767634ff8a9adc5aa1856a4214539530e4c56fe Mon Sep 17 00:00:00 2001
+From: Sam <sameverything@gmail.com>
+Date: Sat, 12 Jan 2019 11:13:10 +0000
+Subject: added proxy true
+
+---
+ services/passport.js | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/services/passport.js b/services/passport.js
+index f1c8140789fbe60d2639c526533a6a59aff5a9bc..405ae7df76f22e601a632bd8fa0b8bf8a17a8380 100644
+--- a/services/passport.js
++++ b/services/passport.js
+@@ -23,7 +23,8 @@ passport.use(
+     {
+       clientID: keys.googleClientID,
+       clientSecret: keys.googleClientSecret,
+-      callbackURL: '/auth/google/callback'
++      callbackURL: '/auth/google/callback',
++      proxy: true
+ 
+     },
+    
+-- 
+2.20.1.windows.1
+
+
